@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edubridge</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="edu.png" type="image/x-icon" />
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --dark: #1f2937;
+      --light: #f8f9fa;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--dark);
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      height: 100vh;
+      width: 280px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding-top: 20px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1040;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar a {
+      color: rgba(255, 255, 255, 0.9);
+      padding: 12px 25px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      margin: 5px 15px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar a i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(5px);
+      color: white;
+    }
+
+    .sidebar a.active {
+      background: white;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .sidebar h2 {
+      color: white;
+      text-align: center;
+      margin: 1.5rem 0;
+      font-weight: 600;
+      font-size: 1.5rem;
+    }
+
+    .sidebar-footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+    }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      z-index: 1030;
+    }
+
+    /* Menu Button */
+    .menu-toggle-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: none;
+      z-index: 1050;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle-btn:hover {
+      transform: scale(1.05);
+      background-color: var(--secondary);
+    }
+
+    /* Main Content */
+    .main-container {
+      margin-left: 280px;
+      padding: 30px;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Chat Card */
+    .chat-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .chat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .chat-header h2 {
+      margin: 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .chat-header h2 i {
+      margin-right: 12px;
+    }
+
+    /* Chat Content */
+    .chat-content {
+      padding: 2rem;
+    }
+
+    /* Input Area */
+    .input-area {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-area textarea {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      font-size: 1rem;
+      resize: none;
+      transition: all 0.3s ease;
+      min-height: 120px;
+    }
+
+    .input-area textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+
+    /* Send Button */
+    .send-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .send-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+    }
+
+    /* Response Area */
+    .response-area {
+      margin-top: 2rem;
+    }
+
+    .response-box {
+      background-color: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      min-height: 100px;
+      border-left: 4px solid var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .response-box.loading {
+      background-color: #f0f4f8;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    .response-box.error {
+      border-left-color: var(--danger);
+      background-color: rgba(247, 37, 133, 0.05);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    /* Mobile Styles */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.show {
+        transform: translateX(0);
+      }
+
+      .overlay.show {
+        display: block;
+      }
+
+      .menu-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main-container {
+        margin-left: 0;
+        padding: 20px;
+        padding-top: 80px;
+      }
+
+      .chat-card {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toggle Button -->
+  <button class="menu-toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <h2><i class="fas fa-graduation-cap me-2"></i>Campus Bridge</h2>
+    <a href="student_dashboard.html">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+    <a href="student_timetable.html">
+      <i class="fas fa-tachometer-alt"></i> TimeTable
+    </a>
+    <a href="student_courses.html">
+      <i class="fas fa-book-open"></i> Courses
+    </a>
+    <a href="student_assignments.html">
+      <i class="fas fa-tasks"></i> Assignments
+    </a>
+    <a href="student_attendance.html">
+      <i class="fas fa-clipboard-check"></i> Attendance
+    </a>
+    <a href="student_results.html">
+      <i class="fas fa-clipboard-check"></i> Results
+    </a>
+    <a href="edubot.html" class="active">
+      <i class="fas fa-robot"></i> Edubot AI
+    </a>
+    <a href="#" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+    <div class="sidebar-footer">
+      © 2023 Edubridge | v1.0.0
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="chat-card animate-fade">
+      <div class="chat-header">
+        <h2><i class="fas fa-robot"></i> AI Assistant</h2>
+      </div>
+
+      <div class="chat-content">
+        <div class="input-area">
+          <textarea id="userInput" rows="4" placeholder="Type your message here..." class="animate-fade delay-1"></textarea>
+          <button class="send-btn w-100 mt-3 animate-fade delay-2" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </div>
+
+        <div class="response-area animate-fade delay-3">
+          <h5 class="mb-3">Response</h5>
+          <div class="response-box" id="responseBox">
+            Ready to chat! Enter your message above.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById("userInput").value.trim();
+      const responseBox = document.getElementById("responseBox");
+
+      if (!userInput) {
+        responseBox.textContent = "Please type a message before sending.";
+        responseBox.classList.add("error");
+        setTimeout(() => responseBox.classList.remove("error"), 3000);
+        return;
+      }
+
+      // Clear input and show loading state
+      document.getElementById("userInput").value = "";
+      responseBox.textContent = "Thinking...";
+      responseBox.className = "response-box loading";
+
+      const payload = {
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: "You are a helpful assistant for students and faculty at Campus Bridge. Provide concise, accurate, and educational responses." },
+          { role: "user", content: userInput }
+        ],
+        temperature: 0.7,
+        max_tokens: 512
+      };
+
+      try {
+        const res = await fetch("https://api.aimlapi.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer f53deeb481ad4696893718e8c315f282"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(errorText || "API request failed");
+        }
+
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || "No response received.";
+        
+        responseBox.className = "response-box";
+        responseBox.textContent = reply;
+
+      } catch (error) {
+        responseBox.className = "response-box error";
+        responseBox.textContent = "Error: " + error.message;
+      }
+    }
+
+    // Allow pressing Enter to send (Shift+Enter for new line)
+    document.getElementById("userInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        // Add logout logic here
+        window.location.href = "student_login.html";
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      sidebar.classList.toggle("show");
+      overlay.classList.toggle("show");
+      
+      // Toggle menu icon
+      const menuBtn = document.querySelector('.menu-toggle-btn');
+      if (sidebar.classList.contains('show')) {
+        menuBtn.innerHTML = '<i class="fas fa-times"></i>';
+      } else {
+        menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      }
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
